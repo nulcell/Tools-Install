@@ -28,7 +28,6 @@ basicRequirements() {
 	export LC_ALL=en_US.UTF-8
 	sudo apt update -y && sudo apt upgrade -y
 	sudo apt-get install -y git swig chromium-browser wireshark cmake gcc g++ build-essential lsb-release file dnsutils lua5.1 alsa-utils nmap fping libpq5 locate ncdu net-tools git openvpn tmux python3-pip p7zip-full ca-certificates curl gnupg-agent software-properties-common net-tools nmap john wfuzz nikto gobuster masscan wireguard nfs-common hydra cewl mlocate libcurl4-openssl-dev libssl-dev jq libxml2 libxml2-dev libxslt1-dev ruby-dev build-essential libgmp-dev zlib1g-dev build-essential libssl-dev libffi-dev python3-dev python3-setuptools libldns-dev rename nano vim ruby ruby-dev python3-pip python3-dnspython ruby-full ruby-railties php binutils gdb strace perl libnet-ssleay-perl openssl libauthen-pam-perl libio-pty-perl libncurses5-dev build-essential zlib1g libpq-dev libpcap-dev libsqlite3-dev awscli
-	sudo apt install -y zeek
 
 	echo -e "[$GREEN+$RESET] Installing Docker-ce and adding current user to group.."
 	if [ -e `which docker` ]; then
@@ -410,7 +409,7 @@ githubTools() {
 		echo -e "[$GREEN+$RESET] Already installed."
 	else
 		cd "$HOME"/tools/ || return
-		git clone git clone https://github.com/ticarpi/jwt_tool.git
+		git clone https://github.com/ticarpi/jwt_tool.git
 		cd jwt_tool && pip3 install -r requirements.txt && cd -
 		echo -e "[$GREEN+$RESET] Done."
 	fi
@@ -455,9 +454,9 @@ githubTools() {
 otherTools() {
 	echo -e "[$GREEN+$RESET] Installing findomain.."
 	arch=`uname -m`
-	if [ -e "$HOME"/tools/findomain ]; then
+	if [ -e `which findomain` ]; then
 		echo -e "[$GREEN+$RESET] Already installed."
-	elif [[ "$arch" == "x86_64" ]]; then
+	elif [ "$arch" == "x86_64" ]; then
 		wget https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -O "$HOME"/tools/findomain
 		chmod +x "$HOME"/tools/findomain
 		sudo mv "$HOME"/tools/findomain /usr/local/bin
@@ -475,7 +474,7 @@ otherTools() {
 
 	echo -e "[$GREEN+$RESET] Installing aquatone v1.7.0.."
 	arch=`uname -m`
-	if [[ "$arch" == "x86_64" ]]; then
+	if [ "$arch" == "x86_64" ]; then
 		cd /tmp && wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_amd64_1.7.0.zip && unzip aquatone_linux_amd64_1.7.0.zip && chmod +x aquatone && mv aquatone ~/go/bin/ && cd -
 	else
 		cd /tmp && wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_arm64_1.7.0.zip && unzip aquatone_linux_arm64_1.7.0.zip && chmod +x aquatone && mv aquatone ~/go/bin/ && cd -
