@@ -31,9 +31,14 @@ basicRequirements() {
 	sudo apt install -y zeek
 
 	echo -e "[$GREEN+$RESET] Installing Docker-ce and adding current user to group.."
-	curl -sSL https://get.docker.com | sh
-	sudo pip3 install docker-compose
-	sudo usermod -aG docker ${USER}
+	if [ -e `which docker` ]; then
+		echo -e "[$GREEN+$RESET] Already installed."
+	else
+		curl -sSL https://get.docker.com | sh
+		sudo pip3 install docker-compose
+		sudo usermod -aG docker ${USER}
+		echo -e "[$GREEN+$RESET] Done."
+	fi
 
 	sudo apt-get autoremove -y
 	sudo apt clean
@@ -58,10 +63,10 @@ golangInstall() {
 		echo -e "[$GREEN+$RESET] Go is already installed, skipping installation"
 	else
 		cd /tmp
-    wget https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
-    sudo tar -C /opt -xzf go1.17.2.linux-amd64.tar.gz
-    sudo ln -s /opt/go/bin/go /usr/local/bin/go
-    cd -
+		wget https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
+		sudo tar -C /opt -xzf go1.17.2.linux-amd64.tar.gz
+		sudo ln -s /opt/go/bin/go /usr/local/bin/go
+		cd -
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
@@ -168,11 +173,11 @@ golangTools() {
 	GO111MODULE=on go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 	nuclei -update-templates
 	echo -e "[$GREEN+$RESET] Done."
-	
+
 	echo -e "[$GREEN+$RESET] Installing cf-check"
 	go install github.com/dwisiswant0/cf-check@latest
 	echo -e "[$GREEN+$RESET] Done."
-	
+
 	echo -e "[$GREEN+$RESET] Installing naabu"
 	GO111MODULE=on go install github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
 	echo -e "[$GREEN+$RESET] Done."
