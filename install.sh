@@ -391,7 +391,7 @@ githubTools() {
 		echo -e "[$GREEN+$RESET] Already installed."
 	else
 		cd "$HOME"/tools/ || return
-		git clone git clone https://github.com/internetwache/GitTools.git
+		git clone https://github.com/internetwache/GitTools.git
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
@@ -400,7 +400,7 @@ githubTools() {
 		echo -e "[$GREEN+$RESET] Already installed."
 	else
 		cd "$HOME"/tools/ || return
-		git clone git clone https://github.com/yunemse48/403bypasser.git
+		git clone https://github.com/yunemse48/403bypasser.git
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
@@ -419,7 +419,7 @@ githubTools() {
 		echo -e "[$GREEN+$RESET] Already installed."
 	else
 		cd "$HOME"/tools/ || return
-		git clone git clone https://github.com/sherlock-project/sherlock.git
+		git clone https://github.com/sherlock-project/sherlock.git
 		cd sherlock && pip3 install -r requirements.txt && cd -
 		echo -e "[$GREEN+$RESET] Done."
 	fi
