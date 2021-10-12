@@ -195,13 +195,15 @@ pythonTools() {
 	echo -e "[$GREEN+$RESET] Installing Altdns, Discord.py, droopescan, raccoon.."
 	python3 -m pip install py-altdns discord.py droopescan raccoon-scanner
 	echo -e "[$GREEN+$RESET] Done."
-  
+}
+
 : 'Ruby tools'
 rubyTools() {
 	echo -e "[$GREEN+$RESET] Installing wpscan, evil-winrm.."
 	sudo gem install wpscan evil-winrm
 	echo -e "[$GREEN+$RESET] Done."
-  
+}
+
 : 'Github tools'
 githubTools() {
   cd ~/tools
@@ -442,6 +444,7 @@ githubTools() {
 		git clone https://github.com/fuzzdb-project/fuzzdb.git
 		echo -e "[$GREEN+$RESET] Done."
 	fi
+}
 
 : 'Other tools'
 otherTools() {
@@ -485,7 +488,7 @@ otherTools() {
 		cd ..
 		echo -e "[$GREEN+$RESET] Done."
 	fi
-
+}
 
 : 'start of main program'
 displayLogo
@@ -496,3 +499,4 @@ pythonTools
 rubyTools
 githubTools
 otherTools
+
