@@ -27,7 +27,9 @@ basicRequirements() {
 	export LANG=en_US.UTF-8
 	export LC_ALL=en_US.UTF-8
 	sudo apt update -y && sudo apt full-upgrade -y
-	sudo apt-get install -y git swig whatweb chromium wireshark cmake gcc g++ build-essential lsb-release file dnsutils lua5.1 alsa-utils nmap fping libpq5 locate ncdu net-tools git openvpn tmux python3-pip p7zip-full ca-certificates curl gnupg-agent software-properties-common net-tools nmap john wfuzz nikto gobuster masscan wireguard nfs-common hydra cewl mlocate libcurl4-openssl-dev libssl-dev jq libxml2 libxml2-dev libxslt1-dev ruby-dev build-essential libgmp-dev zlib1g-dev build-essential libssl-dev libffi-dev python3-dev python3-setuptools libldns-dev rename nano vim ruby ruby-dev python3-pip python3-dnspython ruby-full ruby-railties php binutils gdb strace perl libnet-ssleay-perl openssl libauthen-pam-perl libio-pty-perl libncurses5-dev build-essential zlib1g libpq-dev libpcap-dev libsqlite3-dev awscli
+	sudo apt install -y git swig whatweb wireshark cmake gcc g++ build-essential lsb-release file dnsutils lua5.1 alsa-utils nmap fping libpq5 locate ncdu net-tools git openvpn tmux python3-pip p7zip-full ca-certificates curl gnupg-agent software-properties-common net-tools nmap john wfuzz nikto gobuster masscan wireguard nfs-common hydra cewl mlocate libcurl4-openssl-dev libssl-dev jq libxml2 libxml2-dev libxslt1-dev ruby-dev build-essential libgmp-dev zlib1g-dev build-essential libssl-dev libffi-dev python3-dev python3-setuptools libldns-dev rename nano vim ruby ruby-dev python3-pip python3-dnspython ruby-full ruby-railties php binutils gdb strace perl libnet-ssleay-perl openssl libauthen-pam-perl libio-pty-perl libncurses5-dev build-essential zlib1g libpq-dev libpcap-dev libsqlite3-dev awscli
+	sudo apt install -y chromium
+	sudo apt install -y chromium-browser
 
 	echo -e "[$GREEN+$RESET] Installing Docker-ce and adding current user to group.."
 	if [ -e `which docker` ]; then
@@ -91,6 +93,8 @@ golangInstall() {
 
 : 'Golang tools'
 golangTools() {
+	unset GOROOT
+	
 	echo -e "[$GREEN+$RESET] Installing subfinder.."
 	go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 	echo -e "[$GREEN+$RESET] Done."
@@ -118,6 +122,10 @@ golangTools() {
 
 	echo -e "[$GREEN+$RESET] Installing unfurl.."
 	go install github.com/tomnomnom/unfurl@latest
+	echo -e "[$GREEN+$RESET] Done."
+	
+	echo -e "[$GREEN+$RESET] Installing waybackurls.."
+	go install github.com/tomnomnom/waybackurls@latest
 	echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing gf.."
@@ -197,7 +205,7 @@ golangTools() {
 : 'Python tools'
 pythonTools() {
 	echo -e "[$GREEN+$RESET] Installing Altdns, Discord.py, droopescan, raccoon.."
-	python3 -m pip install py-altdns discord.py droopescan raccoon-scanner
+	python3 -m pip install py-altdns discord.py droopescan raccoon-scanner pysqlcipher3
 	echo -e "[$GREEN+$RESET] Done."
 }
 
