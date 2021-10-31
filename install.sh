@@ -71,21 +71,19 @@ golangInstall() {
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
-	echo -e "[$GREEN+$RESET] Adding Golang alias to "$HOME"/.bashrc.."
+	echo -e "[$GREEN+$RESET] Adding Golang alias to "$HOME"/.profile.."
 	sleep 1
-	configfile=~/.bashrc
+	configfile=~/.profile
 
 	if [ "$(cat "$configfile" | grep '^export GOPATH=')" == "" ]; then
-		echo export GOPATH='$HOME'/go >>"$HOME"/.bashrc
+		echo export GOPATH='$HOME'/go >> "$configfile"
 	fi
 
 	if [ "$(echo $PATH | grep $GOPATH)" == "" ]; then
-		echo export PATH='$PATH:$GOPATH'/bin >>"$HOME"/.bashrc
+		echo export PATH='$PATH:$GOPATH'/bin >> "$configfile"
 	fi
 
-	bash /etc/profile.d/golang_path.sh
-
-	source "$HOME"/.bashrc
+	source "$configfile"
 
 	cd "$HOME" || return
 	echo -e "[$GREEN+$RESET] Golang has been configured."
@@ -185,10 +183,6 @@ golangTools() {
 	go install github.com/dwisiswant0/cf-check@latest
 	echo -e "[$GREEN+$RESET] Done."
 
-	echo -e "[$GREEN+$RESET] Installing naabu"
-	GO111MODULE=on go install github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
-	echo -e "[$GREEN+$RESET] Done."
-
   	echo -e "[$GREEN+$RESET] Installing httpx"
 	GO111MODULE=on go install github.com/projectdiscovery/httpx/cmd/httpx@latest
 	echo -e "[$GREEN+$RESET] Done."
@@ -204,8 +198,8 @@ golangTools() {
 
 : 'Python tools'
 pythonTools() {
-	echo -e "[$GREEN+$RESET] Installing Altdns, Discord.py, droopescan, raccoon.."
-	python3 -m pip install py-altdns discord.py droopescan raccoon-scanner pysqlcipher3
+	echo -e "[$GREEN+$RESET] Installing Altdns, droopescan, raccoon.."
+	python3 -m pip install py-altdns droopescan raccoon-scanner pysqlcipher3
 	echo -e "[$GREEN+$RESET] Done."
 }
 
