@@ -17,8 +17,8 @@ v$VERSION - $YELLOW@NullCell8822$RESET
 
 # Basic requirements
 basicRequirements() {
-	echo -e "[$GREEN+$RESET] This script will install the required dependencies for most offensive security work, please stand by.."
-	echo -e "[$GREEN+$RESET] It will take a while, go grab a cup of coffee :)"
+	echo -e "[$GREEN+$RESET] This script will install the required tools and dependencies for a lot of offensive security work (mostly web now), please stand by.."
+	echo -e "[$GREEN+$RESET] It may take a while, go grab a cup of coffee :)"
 	cd "$HOME" || return
 	sleep 1
 
@@ -51,7 +51,6 @@ basicRequirements() {
 	mkdir -p ~/go/pkg
 	sudo chmod u+w .
   echo "Don't forget to set up AWS credentials!"
-  echo "Don't forget to set up AWS credentials!"
   sleep 5
 	echo -e "[$GREEN+$RESET] Done."
 }
@@ -62,6 +61,8 @@ golangInstall() {
 
 	if [[ $(go version | grep -o '1.17') == '1.17' ]]; then
 		echo -e "[$GREEN+$RESET] Go is already installed, skipping installation"
+	else if [ $(uname --kernel-release | grep -o 'kali') == 'kali' ]; then
+		sudo apt install golang 
 	else
 		cd /tmp
 		wget https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
@@ -71,31 +72,26 @@ golangInstall() {
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
-	echo -e "[$GREEN+$RESET] Adding Golang alias to "$HOME"/.profile.."
-	sleep 1
-	configfile=~/.profile
+		sleep 1
+		configfile="$HOME"/.profile
+		echo -e "[$GREEN+$RESET] Adding Golang alias to "$configfile"..."
 
-	if [ "$(cat "$configfile" | grep '^export GOPATH=')" == "" ]; then
-		echo export GOPATH='$HOME'/go >> "$configfile"
-	fi
+		if [ "$(cat "$configfile" | grep '^export GOPATH=')" == "" ]; then
+			echo export GOPATH='$HOME'/go >> "$configfile"
+		fi
 
-	if [ "$(echo $PATH | grep $GOPATH)" == "" ]; then
-		echo export PATH='$PATH:$GOPATH'/bin >> "$configfile"
-	fi
+		if [ "$(echo $PATH | grep $GOPATH)" == "" ]; then
+			echo export PATH='$PATH:$GOPATH'/bin >> "$configfile"
+		fi
 
-	source "$configfile"
+		source "$configfile"
 
-	cd "$HOME" || return
-	echo -e "[$GREEN+$RESET] Golang has been configured."
+		cd "$HOME" || return
+		echo -e "[$GREEN+$RESET] Golang has been configured."
 }
 
 : 'Golang tools'
 golangTools() {
-	unset GOROOT
-	
-	echo -e "[$GREEN+$RESET] Installing subfinder.."
-	go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-	echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing subjack.."
 	GO111MODULE=off go get -d github.com/haccer/subjack
@@ -108,14 +104,6 @@ golangTools() {
 
 	echo -e "[$GREEN+$RESET] Installing assetfinder.."
 	go install github.com/tomnomnom/assetfinder@latest
-	echo -e "[$GREEN+$RESET] Done."
-
-	echo -e "[$GREEN+$RESET] Installing meg.."
-	go install github.com/tomnomnom/meg@latest
-	echo -e "[$GREEN+$RESET] Done."
-
-	echo -e "[$GREEN+$RESET] Installing tojson.."
-	go install github.com/tomnomnom/hacks/tojson@latest
 	echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing unfurl.."
@@ -131,19 +119,15 @@ golangTools() {
 	go install github.com/tomnomnom/gf@latest
 	echo 'source $GOPATH/src/github.com/tomnomnom/gf/gf-completion.bash' >> ~/.bashrc
 	cp -r $GOPATH/src/github.com/tomnomnom/gf/examples ~/.gf
-	cd ~/tools/ || return
-	git clone https://github.com/1ndianl33t/Gf-Patterns
-	cp Gf-Patterns/*.json ~/.gf
-	git clone https://github.com/dwisiswant0/gf-secrets
-	cp gf-secrets/.gf/*.json ~/.gf
+	#cd ~/tools/ || return
+	#git clone https://github.com/1ndianl33t/Gf-Patterns
+	#cp Gf-Patterns/*.json ~/.gf
+	#git clone https://github.com/dwisiswant0/gf-secrets
+	#cp gf-secrets/.gf/*.json ~/.gf
 	echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing anew.."
 	go install github.com/tomnomnom/anew@latest
-	echo -e "[$GREEN+$RESET] Done."
-
-	echo -e "[$GREEN+$RESET] Installing qsreplace.."
-	go install github.com/tomnomnom/qsreplace@latest
 	echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing ffuf.."
@@ -156,10 +140,6 @@ golangTools() {
 
 	echo -e "[$GREEN+$RESET] Installing Amass.."
 	GO111MODULE=on go get github.com/OWASP/Amass/v3/...
-	echo -e "[$GREEN+$RESET] Done."
-
-	echo -e "[$GREEN+$RESET] Installing getJS.."
-	go install github.com/003random/getJS@latest
 	echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing getallURL.."
@@ -177,10 +157,6 @@ golangTools() {
 	echo -e "[$GREEN+$RESET] Installing nuclei.."
 	GO111MODULE=on go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 	nuclei -update-templates
-	echo -e "[$GREEN+$RESET] Done."
-
-	echo -e "[$GREEN+$RESET] Installing cf-check"
-	go install github.com/dwisiswant0/cf-check@latest
 	echo -e "[$GREEN+$RESET] Done."
 
   	echo -e "[$GREEN+$RESET] Installing httpx"
@@ -239,18 +215,6 @@ githubTools() {
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
-	echo -e "[$GREEN+$RESET] Installing Corsy (CORS Misconfiguration Scanner).."
-	if [ -e "$HOME"/tools/Corsy/corsy.py ]; then
-		echo -e "[$GREEN+$RESET] Already installed."
-	else
-		cd "$HOME"/tools/ || return
-		git clone https://github.com/s0md3v/Corsy.git
-		cd "$HOME"/tools/Corsy || return
-		pip3 install -r requirements.txt
-		cd "$HOME"/tools/ || return
-		echo -e "[$GREEN+$RESET] Done."
-	fi
-
 	echo -e "[$GREEN+$RESET] Installing dirsearch.."
 	if [ -e "$HOME"/tools/dirsearch/dirsearch.py ]; then
 		echo -e "[$GREEN+$RESET] Already installed."
@@ -303,18 +267,6 @@ githubTools() {
 		cd "$HOME"/tools/ || return
 		git clone https://github.com/GerbenJavado/LinkFinder.git
 		cd "$HOME"/tools/LinkFinder || return
-		pip3 install -r requirements.txt
-		echo -e "[$GREEN+$RESET] Done."
-	fi
-
-	echo -e "[$GREEN+$RESET] Installing bass.."
-	if [ -e "$HOME"/tools/bass/bass.py ]; then
-		echo -e "[$GREEN+$RESET] Already installed."
-	else
-		cd "$HOME"/tools/ || return
-		git clone https://github.com/Abss0x7tbh/bass.git
-		cd "$HOME"/tools/bass || return
-		python3 -m pip install tldextract
 		pip3 install -r requirements.txt
 		echo -e "[$GREEN+$RESET] Done."
 	fi
@@ -416,6 +368,15 @@ githubTools() {
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
+	echo -e " Installing CSRF PoC Generator"
+	if [ -e "$HOME"/tools/csrf-poc-generator ]; then
+		echo -e "[$GREEN+$RESET] Already installed."
+	else
+		cd "$HOME"/tools/ || return
+		git clone https://github.com/merttasci/csrf-poc-generator.git
+		echo -e "[$GREEN+$RESET] Done."
+	fi
+
 	echo -e "[$GREEN+$RESET] Installing sherlock.."
 	if [ -e "$HOME"/tools/sherlock/ ]; then
 		echo -e "[$GREEN+$RESET] Already installed."
@@ -470,9 +431,9 @@ otherTools() {
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
-	echo -e "[$GREEN+$RESET] Installing nmap vulners script.."
-	sudo wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse -O /usr/share/nmap/scripts/vulners.nse && sudo nmap --script-updatedb
-	echo -e "[$GREEN+$RESET] Done."
+	#echo -e "[$GREEN+$RESET] Installing nmap vulners script.."
+	#sudo wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse -O /usr/share/nmap/scripts/vulners.nse && sudo nmap --script-updatedb
+	#echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing aquatone v1.7.0.."
 	arch=`uname -m`
