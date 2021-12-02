@@ -7,7 +7,7 @@ RESET="\033[0m"
 VERSION="0.1"
 
 # Display the logo
-displayLogo() {
+displayLogo(){
 	echo -e "
 ----------------------------------------
 NullCell Cybersecurity Tools Install
@@ -16,20 +16,16 @@ v$VERSION - $YELLOW@NullCell8822$RESET
 }
 
 # Basic requirements
-basicRequirements() {
+getBasicRequirements(){
 	echo -e "[$GREEN+$RESET] This script will install the required tools and dependencies for a lot of offensive security work (mostly web now), please stand by.."
 	echo -e "[$GREEN+$RESET] It may take a while, go grab a cup of coffee :)"
 	cd "$HOME" || return
 	sleep 1
 
 	echo -e "[$GREEN+$RESET] Getting the basics.."
-	export LANGUAGE=en_US.UTF-8
-	export LANG=en_US.UTF-8
-	export LC_ALL=en_US.UTF-8
 	sudo apt update -y && sudo apt full-upgrade -y
 	sudo apt install -y git swig whatweb wireshark cmake gcc g++ build-essential lsb-release file dnsutils lua5.1 alsa-utils nmap fping libpq5 locate ncdu net-tools git openvpn tmux python3-pip p7zip-full ca-certificates curl gnupg-agent software-properties-common net-tools nmap john wfuzz nikto gobuster masscan wireguard nfs-common hydra cewl mlocate libcurl4-openssl-dev libssl-dev jq libxml2 libxml2-dev libxslt1-dev ruby-dev build-essential libgmp-dev zlib1g-dev build-essential libssl-dev libffi-dev python3-dev python3-setuptools libldns-dev rename nano vim ruby ruby-dev python3-pip python3-dnspython ruby-full ruby-railties php binutils gdb strace perl libnet-ssleay-perl openssl libauthen-pam-perl libio-pty-perl libncurses5-dev build-essential zlib1g libpq-dev libpcap-dev libsqlite3-dev awscli
-	sudo apt install -y chromium
-	sudo apt install -y chromium-browser
+	sudo apt install -y chromium || sudo apt install -y chromium-browser
 
 	echo -e "[$GREEN+$RESET] Installing Docker-ce and adding current user to group.."
 	if [ -e `which docker` ]; then
@@ -50,13 +46,10 @@ basicRequirements() {
 	mkdir -p ~/go/bin
 	mkdir -p ~/go/pkg
 	sudo chmod u+w .
-  echo "Don't forget to set up AWS credentials!"
-  sleep 5
+	echo "Don't forget to set up AWS credentials!"
+	sleep 5
 	echo -e "[$GREEN+$RESET] Done."
-}
-
-# Golang initials
-golangInstall() {
+	
 	echo -e "[$GREEN+$RESET] Installing and setting up Go.."
 
 	if [[ $(go version | grep -o '1.17') == '1.17' ]]; then
@@ -65,15 +58,20 @@ golangInstall() {
 		sudo apt install golang 
 	else
 		cd /tmp
-		wget https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
-		sudo tar -C /opt -xzf go1.17.2.linux-amd64.tar.gz
+		wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz
+		sudo tar -C /opt -xzf go1.17.3.linux-amd64.tar.gz
 		sudo ln -s /opt/go/bin/go /usr/local/bin/go
 		cd -
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
 		sleep 1
-		configfile="$HOME"/.profile
+		if [ $(echo $SHELL | grep -o zsh) == 'zsh' ]; then
+			configfile="$HOME"/.zshrc
+		else
+			configfile="$HOME"/.bashrc
+		fi
+
 		echo -e "[$GREEN+$RESET] Adding Golang alias to "$configfile"..."
 
 		if [ "$(cat "$configfile" | grep '^export GOPATH=')" == "" ]; then
@@ -90,8 +88,14 @@ golangInstall() {
 		echo -e "[$GREEN+$RESET] Golang has been configured."
 }
 
-: 'Golang tools'
-golangTools() {
+
+getWebTools(){
+	echo -e "[$GREEN+$RESET] Setting up Web Tools \n"
+
+	: 'Golang tools'
+	echo -e "[$GREEN+$RESET] Installing subfinder.."
+	go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+	echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing subjack.."
 	GO111MODULE=off go get -d github.com/haccer/subjack
@@ -119,11 +123,11 @@ golangTools() {
 	go install github.com/tomnomnom/gf@latest
 	echo 'source $GOPATH/src/github.com/tomnomnom/gf/gf-completion.bash' >> ~/.bashrc
 	cp -r $GOPATH/src/github.com/tomnomnom/gf/examples ~/.gf
-	#cd ~/tools/ || return
-	#git clone https://github.com/1ndianl33t/Gf-Patterns
-	#cp Gf-Patterns/*.json ~/.gf
-	#git clone https://github.com/dwisiswant0/gf-secrets
-	#cp gf-secrets/.gf/*.json ~/.gf
+	cd ~/tools/ || return
+	git clone https://github.com/1ndianl33t/Gf-Patterns
+	cp Gf-Patterns/*.json ~/.gf
+	git clone https://github.com/dwisiswant0/gf-secrets
+	cp gf-secrets/.gf/*.json ~/.gf
 	echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing anew.."
@@ -163,58 +167,22 @@ golangTools() {
 	GO111MODULE=on go install github.com/projectdiscovery/httpx/cmd/httpx@latest
 	echo -e "[$GREEN+$RESET] Done."
 
-	echo -e "[$GREEN+$RESET] Installing crobat"
-	go install github.com/cgboal/sonarsearch/cmd/crobat@latest
-	echo -e "[$GREEN+$RESET] Done."
-
 	echo -e "[$GREEN+$RESET] Installing slackcat"
 	go install github.com/dwisiswant0/slackcat@latest
 	echo -e "[$GREEN+$RESET] Done."
-}
 
-: 'Python tools'
-pythonTools() {
+	: 'Python tools'
 	echo -e "[$GREEN+$RESET] Installing Altdns, droopescan, raccoon.."
-	python3 -m pip install py-altdns droopescan raccoon-scanner pysqlcipher3
+	python3 -m pip install py-altdns droopescan pysqlcipher3
 	echo -e "[$GREEN+$RESET] Done."
-}
 
-: 'Ruby tools'
-rubyTools() {
-	echo -e "[$GREEN+$RESET] Installing wpscan, evil-winrm.."
-	sudo gem install wpscan evil-winrm
+	: 'Ruby tools'
+	echo -e "[$GREEN+$RESET] Installing wpscan"
+	sudo gem install wpscan
 	echo -e "[$GREEN+$RESET] Done."
-}
 
-: 'Github tools'
-githubTools() {
-  cd ~/tools
-	echo -e "[$GREEN+$RESET] Installing massdns.."
-	if [ -e /usr/local/bin/massdns ]; then
-		echo -e "[$GREEN+$RESET] Already installed."
-	else
-		cd "$HOME"/tools/ || return
-		git clone https://github.com/blechschmidt/massdns.git
-		cd "$HOME"/tools/massdns || return
-		echo -e "[$GREEN+$RESET] Running make command for massdns.."
-		make -j
-		sudo cp "$HOME"/tools/massdns/bin/massdns /usr/local/bin/
-		echo -e "[$GREEN+$RESET] Done."
-	fi
-
-	echo -e "[$GREEN+$RESET] Installing masscan.."
-	if [ -e /usr/local/bin/masscan ]; then
-		echo -e "[$GREEN+$RESET] Already installed."
-	else
-		cd "$HOME"/tools/ || return
-		git clone https://github.com/robertdavidgraham/masscan
-		cd "$HOME"/tools/masscan || return
-		make -j
-		sudo cp bin/masscan /usr/local/bin/masscan
-		cd "$HOME"/tools/ || return
-		echo -e "[$GREEN+$RESET] Done."
-	fi
-
+	: 'Github tools'
+	cd ~/tools
 	echo -e "[$GREEN+$RESET] Installing dirsearch.."
 	if [ -e "$HOME"/tools/dirsearch/dirsearch.py ]; then
 		echo -e "[$GREEN+$RESET] Already installed."
@@ -387,12 +355,33 @@ githubTools() {
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
-	echo -e "[$GREEN+$RESET] Downloading LinEnum, PEASS, linux-exploit-suggester and windows-exploit-suggester.."
-	git clone https://github.com/rebootuser/LinEnum.git linenum
-	git clone https://github.com/carlospolop/PEASS-ng.git peass
-	git clone https://github.com/mzet-/linux-exploit-suggester.git
-	git clone https://github.com/AonCyberLabs/Windows-Exploit-Suggester.git
+	echo -e "[$GREEN+$RESET] Installing massdns.."
+	if [ -e /usr/local/bin/massdns ]; then
+		echo -e "[$GREEN+$RESET] Already installed."
+	else
+		cd "$HOME"/tools/ || return
+		git clone https://github.com/blechschmidt/massdns.git
+		cd "$HOME"/tools/massdns || return
+		echo -e "[$GREEN+$RESET] Running make command for massdns.."
+		make -j
+		sudo cp "$HOME"/tools/massdns/bin/massdns /usr/local/bin/
+		echo -e "[$GREEN+$RESET] Done."
+	fi
+
+	echo -e "[$GREEN+$RESET] Installing aquatone v1.7.0.."
+	arch=`uname -m`
+	if [ "$arch" == "x86_64" ]; then
+		cd /tmp && wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_amd64_1.7.0.zip && unzip aquatone_linux_amd64_1.7.0.zip && chmod +x aquatone && mv aquatone ~/go/bin/ && cd -
+	else
+		cd /tmp && wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_arm64_1.7.0.zip && unzip aquatone_linux_arm64_1.7.0.zip && chmod +x aquatone && mv aquatone ~/go/bin/ && cd -
+	fi
 	echo -e "[$GREEN+$RESET] Done."
+
+}
+
+getWordlists(){
+	echo -e "[$GREEN+$RESET] Getting Wordlists"
+	cd ~/tools
 
 	echo -e "[$GREEN+$RESET] Downloading SecLists.."
 	if [ -e "$HOME"/tools/seclists/ ] || [ -e /usr/share/seclists/ ]; then
@@ -413,36 +402,39 @@ githubTools() {
 	fi
 }
 
-: 'Other tools'
-otherTools() {
-	echo -e "[$GREEN+$RESET] Installing findomain.."
-	arch=`uname -m`
-	if [ -e `which findomain` ]; then
-		echo -e "[$GREEN+$RESET] Already installed."
-	elif [ "$arch" == "x86_64" ]; then
-		wget https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-linux -O "$HOME"/tools/findomain
-		chmod +x "$HOME"/tools/findomain
-		sudo mv "$HOME"/tools/findomain /usr/local/bin
-		echo -e "[$GREEN+$RESET] Done."
-	else
-		wget https://github.com/Edu4rdSHL/findomain/releases/latest/download/findomain-aarch64 -O "$HOME"/tools/findomain
-		chmod +x "$HOME"/tools/findomain
-		sudo mv "$HOME"/tools/findomain /usr/local/bin
-		echo -e "[$GREEN+$RESET] Done."
-	fi
+: 'Github tools'
+getPostExploitTools(){
+	cd ~/tools
 
-	#echo -e "[$GREEN+$RESET] Installing nmap vulners script.."
-	#sudo wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse -O /usr/share/nmap/scripts/vulners.nse && sudo nmap --script-updatedb
-	#echo -e "[$GREEN+$RESET] Done."
-
-	echo -e "[$GREEN+$RESET] Installing aquatone v1.7.0.."
-	arch=`uname -m`
-	if [ "$arch" == "x86_64" ]; then
-		cd /tmp && wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_amd64_1.7.0.zip && unzip aquatone_linux_amd64_1.7.0.zip && chmod +x aquatone && mv aquatone ~/go/bin/ && cd -
-	else
-		cd /tmp && wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_arm64_1.7.0.zip && unzip aquatone_linux_arm64_1.7.0.zip && chmod +x aquatone && mv aquatone ~/go/bin/ && cd -
-	fi
+	echo -e "[$GREEN+$RESET] Downloading LinEnum, PEASS, linux-exploit-suggester and windows-exploit-suggester.."
+	git clone https://github.com/rebootuser/LinEnum.git linenum
+	git clone https://github.com/carlospolop/PEASS-ng.git peass
+	git clone https://github.com/mzet-/linux-exploit-suggester.git
+	git clone https://github.com/AonCyberLabs/Windows-Exploit-Suggester.git
 	echo -e "[$GREEN+$RESET] Done."
+
+}
+
+: 'Other tools'
+getGeneralTools(){
+	cd ~/tools
+	echo -e "[$GREEN+$RESET] Installing masscan.."
+	if [ -e /usr/local/bin/masscan ]; then
+		echo -e "[$GREEN+$RESET] Already installed."
+	else
+		cd "$HOME"/tools/ || return
+		git clone https://github.com/robertdavidgraham/masscan
+		cd "$HOME"/tools/masscan || return
+		make -j
+		sudo cp bin/masscan /usr/local/bin/masscan
+		cd "$HOME"/tools/ || return
+		echo -e "[$GREEN+$RESET] Done."
+	fi
+
+	# You can manually get this if you see the need for it
+	# echo -e "[$GREEN+$RESET] Installing nmap vulners script.."
+	# sudo wget https://raw.githubusercontent.com/vulnersCom/nmap-vulners/master/vulners.nse -O /usr/share/nmap/scripts/vulners.nse && sudo nmap --script-updatedb
+	# echo -e "[$GREEN+$RESET] Done."
 
 	echo -e "[$GREEN+$RESET] Installing metasploit framework (Seriously, get a cup of coffee or something).."
 	if [ -e ~/tools/metasploit-framework/ ] || [ -e /usr/bin/msfconsole ]; then
@@ -459,11 +451,8 @@ otherTools() {
 
 : 'start of main program'
 displayLogo
-basicRequirements
-golangInstall
-golangTools
-pythonTools
-rubyTools
-githubTools
-otherTools
-
+getBasicRequirements
+getGeneralTools
+getPostExploitTools
+getWordlists
+getWebTools
