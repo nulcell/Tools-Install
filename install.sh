@@ -54,7 +54,7 @@ getBasicRequirements(){
 
 	if [[ $(go version | grep -o '1.17') == '1.17' ]]; then
 		echo -e "[$GREEN+$RESET] Go is already installed, skipping installation"
-	else if [ $(uname --kernel-release | grep -o 'kali') == 'kali' ]; then
+	elif [ $(uname --kernel-release | grep -o 'kali') == 'kali' ]; then
 		sudo apt install golang 
 	else
 		cd /tmp
