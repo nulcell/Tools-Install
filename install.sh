@@ -210,7 +210,7 @@ getWebTools(){
 	else
 		cd "$HOME"/tools/ || return
 		git clone https://github.com/guelfoweb/knock.git
-		cd knock
+		cd knock || return
 		pip3 install -r requirements.txt
 		echo "alias knockpy='python3 $HOME/tools/knock/knockpy.py'" >> "$HOME"/.bashrc
 		echo -e "[$GREEN+$RESET] Done."
