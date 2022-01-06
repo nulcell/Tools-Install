@@ -204,6 +204,20 @@ getWebTools(){
 		echo -e "[$GREEN+$RESET] Done."
 	fi
 
+	echo -e "[$GREEN+$RESET] Installing Knockpy (Subdomain bruteforcer).."
+	if [ -e "$HOME"/tools/knock/setup.py ]; then
+		echo -e "[$GREEN+$RESET] Already installed."
+	else
+		cd "$HOME"/tools/ || return
+		git clone https://github.com/guelfoweb/knock.git
+		cd knock || return
+		pip3 install -r requirements.txt
+		echo "alias knockpy='python3 $HOME/tools/knock/knockpy.py'" >> "$HOME"/.bashrc
+		echo -e "[$GREEN+$RESET] Done."
+	fi
+	
+
+
 	echo -e "[$GREEN+$RESET] Installing Dnsgen .."
 	if [ -e "$HOME"/tools/dnsgen/setup.py ]; then
 		echo -e "[$GREEN+$RESET] Already installed."
