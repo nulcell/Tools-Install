@@ -98,7 +98,7 @@ getWebTools(){
 	echo -e "[$GREEN+$RESET] Done."
 	
 	echo -e "[$GREEN+$RESET] Installing gospider.."
-	go install github.com/jaeles-project/gospider@latest
+	GO111MODULE=on go get -u github.com/jaeles-project/gospider
 	echo -e "[$GREEN+$RESET] Done."
 	
 	echo -e "[$GREEN+$RESET] Installing subjack.."
