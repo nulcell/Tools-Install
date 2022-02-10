@@ -91,12 +91,21 @@ getBasicRequirements(){
 
 getWebTools(){
 	echo -e "[$GREEN+$RESET] Setting up Web Tools \n"
+	
+	echo -e "[$GREEN+$RESET] Installing shodan.."
+	pip3 install -U --user shodan
+	echo -e "[$GREEN+$RESET] Done."
+	
 
 	: 'Golang tools'
 	echo -e "[$GREEN+$RESET] Installing subfinder.."
 	go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 	echo -e "[$GREEN+$RESET] Done."
-
+	
+	echo -e "[$GREEN+$RESET] Installing gospider.."
+	GO111MODULE=on go get -u github.com/jaeles-project/gospider
+	echo -e "[$GREEN+$RESET] Done."
+	
 	echo -e "[$GREEN+$RESET] Installing subjack.."
 	GO111MODULE=off go get -d github.com/haccer/subjack
 	go install github.com/haccer/subjack@latest
