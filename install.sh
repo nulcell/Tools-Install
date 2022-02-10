@@ -91,6 +91,11 @@ getBasicRequirements(){
 
 getWebTools(){
 	echo -e "[$GREEN+$RESET] Setting up Web Tools \n"
+	
+	echo -e "[$GREEN+$RESET] Installing shodan.."
+	pip3 install -U --user shodan
+	echo -e "[$GREEN+$RESET] Done."
+	
 
 	: 'Golang tools'
 	echo -e "[$GREEN+$RESET] Installing subfinder.."
