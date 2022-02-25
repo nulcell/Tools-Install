@@ -24,11 +24,11 @@ getBasicRequirements(){
 
 	echo -e "[$GREEN+$RESET] Getting the basics.."
 	sudo apt update -y && sudo apt full-upgrade -y
-	sudo apt install -y git swig whatweb wireshark cmake gcc g++ build-essential lsb-release file dnsutils lua5.1 alsa-utils nmap fping libpq5 locate ncdu net-tools git openvpn tmux python3-pip p7zip-full ca-certificates curl gnupg-agent software-properties-common net-tools nmap john wfuzz nikto gobuster masscan wireguard nfs-common hydra cewl mlocate libcurl4-openssl-dev libssl-dev jq libxml2 libxml2-dev libxslt1-dev ruby-dev build-essential libgmp-dev zlib1g-dev build-essential libssl-dev libffi-dev python3-dev python3-setuptools libldns-dev rename nano vim ruby ruby-dev python3-pip python3-dnspython ruby-full ruby-railties php binutils gdb strace perl libnet-ssleay-perl openssl libauthen-pam-perl libio-pty-perl libncurses5-dev build-essential zlib1g libpq-dev libpcap-dev libsqlite3-dev awscli
+	sudo apt install -y git swig whatweb wireshark cmake gcc g++ build-essential lsb-release file dnsutils lua5.1 alsa-utils nmap fping libpq5 locate ncdu net-tools git openvpn tmux python3-pip p7zip-full ca-certificates curl gnupg-agent software-properties-common net-tools nmap john wfuzz gobuster masscan wireguard nfs-common hydra cewl mlocate libcurl4-openssl-dev libssl-dev jq libxml2 libxml2-dev libxslt1-dev ruby-dev build-essential libgmp-dev zlib1g-dev build-essential libssl-dev libffi-dev python3-dev python3-setuptools libldns-dev rename nano vim ruby ruby-dev python3-pip python3-dnspython ruby-full ruby-railties php binutils gdb strace perl libnet-ssleay-perl openssl libauthen-pam-perl libio-pty-perl libncurses5-dev build-essential zlib1g libpq-dev libpcap-dev libsqlite3-dev awscli
 	sudo apt install -y chromium || sudo apt install -y chromium-browser
 
 	echo -e "[$GREEN+$RESET] Installing Docker-ce and adding current user to group.."
-	if [ -e `which docker` ]; then
+	if [[ -e `which docker` ]]; then
 		echo -e "[$GREEN+$RESET] Already installed."
 	else
 		curl -sSL https://get.docker.com | sh
@@ -54,7 +54,7 @@ getBasicRequirements(){
 
 	if [[ $(go version | grep -o '1.17') == '1.17' ]]; then
 		echo -e "[$GREEN+$RESET] Go is already installed, skipping installation"
-	elif [ $(uname --kernel-release | grep -o 'kali') == 'kali' ]; then
+	elif [[ $(uname --kernel-release | grep -o 'kali') == 'kali' ]]; then
 		sudo apt install golang 
 	else
 		cd /tmp
@@ -74,11 +74,11 @@ getBasicRequirements(){
 
 		echo -e "[$GREEN+$RESET] Adding Golang alias to "$configfile"..."
 
-		if [ "$(cat "$configfile" | grep '^export GOPATH=')" == "" ]; then
+		if [[ "$(cat "$configfile" | grep '^export GOPATH=')" == "" ]]; then
 			echo export GOPATH='$HOME'/go >> "$configfile"
 		fi
 
-		if [ "$(echo $PATH | grep $GOPATH)" == "" ]; then
+		if [[ "$(echo $PATH | grep $GOPATH)" == "" ]]; then
 			echo export PATH='$PATH:$GOPATH'/bin >> "$configfile"
 		fi
 
