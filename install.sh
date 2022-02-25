@@ -465,7 +465,8 @@ getGeneralTools(){
 	else
 		git clone https://github.com/rapid7/metasploit-framework.git
 		cd metasploit-framework/
-		sudo gem install bundler
+		sudo gem update --system
+		sudo gem install bundler nokogiri json atomic
 		bundle install
 		cd ..
 		echo -e "[$GREEN+$RESET] Done."
