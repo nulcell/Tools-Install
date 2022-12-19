@@ -52,14 +52,14 @@ getBasicRequirements(){
 	
 	echo -e "[$GREEN+$RESET] Installing and setting up Go.."
 
-	if [[ $(go version | grep -o '1.17') == '1.17' ]]; then
+	if [[ $(go version | grep -o '1.19') == '1.19' ]]; then
 		echo -e "[$GREEN+$RESET] Go is already installed, skipping installation"
 	elif [[ $(uname --kernel-release | grep -o 'kali') == 'kali' ]]; then
 		sudo apt install golang 
 	else
 		cd /tmp
-		wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz
-		sudo tar -C /opt -xzf go1.17.3.linux-amd64.tar.gz
+		wget https://golang.org/dl/go1.19.4.linux-amd64.tar.gz
+		sudo tar -C /opt -xzf go1.19.4.linux-amd64.tar.gz
 		sudo ln -s /opt/go/bin/go /usr/local/bin/go
 		cd -
 		echo -e "[$GREEN+$RESET] Done."
